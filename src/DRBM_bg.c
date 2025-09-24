@@ -85,7 +85,7 @@ static int fg_work(struct worker *worker)
 		goto err_out;
 	
 	pos = PRIVATE_REGION_SIZE * worker->id;
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 	        if (pread(fd, page, sizeof(page), pos) == -1)
 			goto err_out;
 	}
@@ -114,7 +114,7 @@ static int bg_work(struct worker *worker)
 	if ((fd = open(path, O_CREAT | O_RDWR, S_IRWXU)) == -1)
 		goto err_out;
 	
-	for (iter = 0; !bench->stop;) {
+	for (iter = 0; should_continue(bench, iter);) {
 		wid = pseudo_random(wid);
 		w = &bench->workers[wid % bench->ncpu];
 		if (w->is_bg) continue; 

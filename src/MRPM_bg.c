@@ -123,7 +123,7 @@ static int fg_work(struct worker *worker)
 	int rc = 0;
 	uint64_t iter = 0;
 
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		randomize_digits(PATH_DEPTH, digits);
 		set_test_path(worker, PATH_DEPTH, digits, mods, path);
 
@@ -149,7 +149,7 @@ static int bg_work(struct worker *worker)
 	int rc = 0;
 	uint64_t iter = 0;
 
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		/* randomly decide path depth for testing */ 
 		seed = pseudo_random(seed);
 		test_depth = 1 + (seed % PATH_DEPTH);

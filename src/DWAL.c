@@ -75,7 +75,7 @@ static int main_work(struct worker *worker)
 
 	/* append */
 	fd = (int)worker->private[0];
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 	        if (write(fd, page, PAGE_SIZE) != PAGE_SIZE)
 			goto err_out;
 	}

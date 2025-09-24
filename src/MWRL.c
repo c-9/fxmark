@@ -59,7 +59,7 @@ static int main_work(struct worker *worker)
 	uint64_t iter;
 	int rc = 0;
 
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		set_test_file(worker,   worker->private[0], old_path);
 		set_test_file(worker, ++worker->private[0], new_path);
 		rc = rename(old_path, new_path);

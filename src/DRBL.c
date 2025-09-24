@@ -73,7 +73,7 @@ static int main_work(struct worker *worker)
         assert(page);
 
         fd = (int)worker->private[0];
-        for (iter = 0; !bench->stop; ++iter) {
+        for (iter = 0; should_continue(bench, iter); ++iter) {
                 if (pread(fd, page, PAGE_SIZE, 0) != PAGE_SIZE)
                         goto err_out;
         }

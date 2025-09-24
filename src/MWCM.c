@@ -29,7 +29,7 @@ static int main_work(struct worker *worker)
 	uint64_t iter;
 	int rc = 0;
 
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		char file[PATH_MAX];
 		int fd;
 		/* create, write, and close */

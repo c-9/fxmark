@@ -106,7 +106,7 @@ static int main_work(struct worker *worker)
                 goto err_out;
 
         pos = PRIVATE_REGION_SIZE * worker->id;
-        for (iter = 0; !bench->stop; ++iter) {
+        for (iter = 0; should_continue(bench, iter); ++iter) {
                 if (pread(fd, page, PAGE_SIZE, pos) != PAGE_SIZE)
                         goto err_out;
         }

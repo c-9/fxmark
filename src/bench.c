@@ -116,13 +116,15 @@ static void worker_main(void *arg)
 		if (bench->profile_start_cmd[0])
 			system(bench->profile_start_cmd);
 
-                /* ok, before running, set timer */
-                if (signal(SIGALRM, sighandler) == SIG_ERR) {
-                        err = errno;
-                        goto err_out;
+                /* ok, before running, set timer (only for time-based runs) */
+                if (bench->timebased) {
+                        if (signal(SIGALRM, sighandler) == SIG_ERR) {
+                                err = errno;
+                                goto err_out;
+                        }
+                        running_bench = bench;
+                        alarm(bench->duration);
                 }
-                running_bench = bench;
-                alarm(bench->duration);
                 bench->start = 1;
                 wmb();
         }

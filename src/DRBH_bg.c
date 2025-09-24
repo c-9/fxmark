@@ -68,7 +68,7 @@ static int fg_work(struct worker *worker)
 	if ((fd = open(path, O_CREAT | O_RDWR, S_IRWXU)) == -1)
 		goto err_out;
 	
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 	        if (pread(fd, page, sizeof(page), 0) == -1)
 			goto err_out;
 	}
@@ -94,7 +94,7 @@ static int bg_work(struct worker *worker)
 	if ((fd = open(path, O_CREAT | O_RDWR, S_IRWXU)) == -1)
 		goto err_out;
 	
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 	        if (pwrite(fd, page, sizeof(page), 0) == -1)
 			goto err_out;
 	}

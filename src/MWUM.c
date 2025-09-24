@@ -57,7 +57,7 @@ static int main_work(struct worker *worker)
     struct bench *bench = worker->bench;
     uint64_t iter;
     int rc = 0;
-    for (iter = 0; iter < worker->private[0] && !bench->stop; ++iter) {
+    for (iter = 0; iter < worker->private[0] && should_continue(bench, iter); ++iter) {
         char file[PATH_MAX];
         set_test_file(worker, iter, file);
         if (unlink(file))

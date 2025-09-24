@@ -89,7 +89,7 @@ static int main_work(struct worker *worker)
     /*get file */
     fd = (int)worker->private[1];
 
-    for (iter = --worker->private[0]; iter > 0 && !bench->stop; --iter) {
+    for (iter = --worker->private[0]; iter > 0 && should_continue(bench, worker->private[0] - iter); --iter) {
       if (ftruncate(fd, iter * PAGE_SIZE) == -1) {
         rc = errno;
         goto err_out;

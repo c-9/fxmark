@@ -99,7 +99,7 @@ static int main_work(struct worker *worker)
 	int rc = 0;
 	uint64_t iter = 0;
 
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		same_digits(PATH_DEPTH, digits);
 		set_test_path(worker, PATH_DEPTH, digits, mods, path);
 

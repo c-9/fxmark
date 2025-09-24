@@ -52,7 +52,7 @@ static int main_work(struct worker *worker)
 
 	set_test_file(worker, path);
 	
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		if (stat(path, &sb) == -1)
 			goto err_out;
 	}

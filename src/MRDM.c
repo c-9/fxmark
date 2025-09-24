@@ -82,10 +82,10 @@ static int main_work(struct worker *worker)
 	int rc = 0;
 
 	set_test_root(worker, dir_path);
-	while (!bench->stop) {
+	while (should_continue(bench, iter)) {
 		dir = opendir(dir_path);
 		if (!dir) goto err_out;
-		for (; !bench->stop; ++iter) {
+		for (; should_continue(bench, iter); ++iter) {
 			rc = readdir_r(dir, &entry, &result);
 			if (rc) goto err_out;
 		}

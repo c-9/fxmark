@@ -105,16 +105,18 @@ static struct bench_operations *find_ops(char *type)
 static int parse_option(int argc, char *argv[], struct cmd_opt *opt)
 {
 	static struct option options[] = {
-		{"type",      required_argument, 0, 't'}, 
-		{"ncore",     required_argument, 0, 'n'}, 
-		{"nbg",       required_argument, 0, 'g'}, 
-		{"duration",  required_argument, 0, 'd'}, 
-		{"directio",  required_argument, 0, 'D'}, 
-		{"root",      required_argument, 0, 'r'}, 
-		{"profbegin", required_argument, 0, 'b'},
-		{"profend",   required_argument, 0, 'e'},
-		{"proflog",   required_argument, 0, 'l'},
-		{0,           0,                 0, 0},
+		{"type",       required_argument, 0, 't'}, 
+		{"ncore",      required_argument, 0, 'n'}, 
+		{"nbg",        required_argument, 0, 'g'}, 
+		{"duration",   required_argument, 0, 'd'}, 
+		{"iterations", required_argument, 0, 'i'}, 
+		{"timebased",  required_argument, 0, 'T'}, 
+		{"directio",   required_argument, 0, 'D'}, 
+		{"root",       required_argument, 0, 'r'}, 
+		{"profbegin",  required_argument, 0, 'b'},
+		{"profend",    required_argument, 0, 'e'},
+		{"proflog",    required_argument, 0, 'l'},
+		{0,            0,                 0, 0},
 	};
 	int arg_cnt;
 
@@ -124,7 +126,7 @@ static int parse_option(int argc, char *argv[], struct cmd_opt *opt)
 	for(arg_cnt = 0; 1; ++arg_cnt) {
 		int c, idx = 0;
 		c = getopt_long(argc, argv, 
-				"t:n:g:d:D:r:b:e:l:", options, &idx);
+				"t:n:g:d:i:T:D:r:b:e:l:", options, &idx);
 		if (c == -1)
 			break; 
 		switch(c) {
@@ -141,6 +143,12 @@ static int parse_option(int argc, char *argv[], struct cmd_opt *opt)
 			break;
 		case 'd':
 			opt->duration = atoi(optarg);
+			break;
+		case 'i':
+			opt->iterations = atoi(optarg);
+			break;
+		case 'T':
+			opt->timebased = atoi(optarg);
 			break;
 		case 'D':
 			opt->directio = atoi(optarg);
@@ -180,6 +188,8 @@ static void usage(FILE *out)
 	fprintf(out, "  --ncore     = number of core\n");
 	fprintf(out, "  --nbg       = number of background worker\n");
 	fprintf(out, "  --duration  = duration in seconds\n");
+	fprintf(out, "  --iterations = number of iterations (used when timebased=0)\n");
+	fprintf(out, "  --timebased = 1 for time-based (use duration), 0 for iteration-based (use iterations)\n");
 	fprintf(out, "  --directio  = file flag set O_DIRECT : 0-false, 1-true\n"
 		"                                         (only valid for DWxx type)\n");
 	fprintf(out, "  --root      = test root directory\n");
@@ -193,6 +203,8 @@ static void init_bench(struct bench *bench, struct cmd_opt *opt)
 	struct fx_opt *fx_opt = fx_opt_bench(bench);
 
 	bench->duration = opt->duration;
+	bench->iterations = opt->iterations;
+	bench->timebased = opt->timebased;
 	bench->directio = opt->directio;
 	strncpy(bench->profile_start_cmd,
 		opt->profile_start_cmd, BENCH_PROFILE_CMD_BYTES);
@@ -206,7 +218,7 @@ static void init_bench(struct bench *bench, struct cmd_opt *opt)
 
 int main(int argc, char *argv[])
 {
-	struct cmd_opt opt = {NULL, 0, 0, 0, 0, NULL};
+	struct cmd_opt opt = {NULL, 0, 0, 0, 0, 1, 0, NULL};
 	struct bench *bench; 
 
 	/* parse command line options */

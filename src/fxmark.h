@@ -19,6 +19,8 @@ struct cmd_opt {
 	int ncore;
 	int nbg;
 	int duration;
+	int iterations;
+	int timebased;
 	int directio;
 	char *root;
 	char *profile_start_cmd;

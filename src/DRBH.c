@@ -90,7 +90,7 @@ static int main_work(struct worker *worker)
         if(bench->directio && (fcntl(fd, F_SETFL, O_DIRECT)==-1))
                 goto err_out;
 
-        for (iter = 0; !bench->stop; ++iter) {
+        for (iter = 0; should_continue(bench, iter); ++iter) {
                 if (pread(fd, page, PAGE_SIZE, 0) != PAGE_SIZE)
                         goto err_out;
         }

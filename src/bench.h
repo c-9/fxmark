@@ -32,6 +32,8 @@ struct bench {
 	int ncpu;
 	int nbg;
 	unsigned int duration;
+	unsigned int iterations;
+	int timebased;
 	int	directio;
 	struct worker *workers; 
 	struct bench_operations ops;
@@ -60,6 +62,16 @@ struct worker {
 struct bench *alloc_bench(int ncpu, int nbg);
 void run_bench(struct bench *bench);
 void report_bench(struct bench *bench, FILE *out);
+
+/* Helper function for loop conditions - supports both time-based and iteration-based runs */
+static inline int should_continue(struct bench *bench, uint64_t iter)
+{
+	if (bench->timebased) {
+		return !bench->stop;  /* time-based: run until alarm signal */
+	} else {
+		return iter < bench->iterations && !bench->stop;  /* iteration-based: run until iteration limit */
+	}
+}
 
 /* cpuinfo */
 extern const unsigned int PHYSICAL_CHIPS;

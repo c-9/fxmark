@@ -85,7 +85,7 @@ static int fg_work(struct worker *worker)
 	int rc = 0;
 
 	set_test_root(worker, dir_path);
-	while (!bench->stop) {
+	while (should_continue(bench, iter)) {
 		dir = opendir(dir_path);
 		if (!dir) goto err_out;
 		for (; !bench->stop; ++iter) {
@@ -111,7 +111,7 @@ static int bg_work(struct worker *worker)
 	uint64_t iter = 0;
 	int fd, rc = 0, i;
 
-	while (!bench->stop) {
+	while (should_continue(bench, iter)) {
 		/* delete a randomly selected file in each worker's private directory */
 		for (i = 0; i < bench->ncpu && !bench->stop; ++i) {
 			struct worker *w = &bench->workers[i];

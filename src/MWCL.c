@@ -35,7 +35,7 @@ static int main_work(struct worker *worker)
 	int rc = 0;
 
 	set_test_root(worker, test_root);
-	for (iter = 0; !bench->stop; ++iter) {
+	for (iter = 0; should_continue(bench, iter); ++iter) {
 		char file[PATH_MAX];
 		int fd;
 		/* create and close */
